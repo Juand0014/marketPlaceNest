@@ -13,7 +13,7 @@ import { User } from './entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from './interfaces';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -37,7 +37,7 @@ export class AuthService {
 
       return {
         ...user,
-        token: this.getJwtToken({ email: user.email })
+        token: this.getJwtToken({ id: user.id })
       };
       
     } catch (error) {
@@ -49,7 +49,7 @@ export class AuthService {
     const { password, email } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
 
     if (!user)
@@ -60,7 +60,7 @@ export class AuthService {
 
     return {
       ...user,
-      token: this.getJwtToken({ email: user.email })
+      token: this.getJwtToken({ id: user.id })
     };
   }
 
